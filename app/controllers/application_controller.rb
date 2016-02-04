@@ -5,29 +5,10 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   def import
-    cat = Category.new
+    
+    parser = ProductParser.new "/home/mflafl/products.xml"
+    res = parser.get_products
 
-    doc = File.open("/home/mflafl/products.xml") { |f|
-      Nokogiri::XML(f)
-    }
-
-    products = doc.xpath('//product')
-
-    categories = [];
-
-    products.each { |p|
-      
-      categories_raw = p.xpath("productinfo/category").text;
-      current_categories = []
-
-      categories_raw.split("-").each { |c|
-        current_categories << c.strip! || c
-      }
-
-      categories << current_categories
-      
-    }
-
-    render :json => categories
+    render :json => res
   end
 end
