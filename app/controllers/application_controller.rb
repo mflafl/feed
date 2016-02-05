@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   def import
+    Product.delete_all
 
     parser = ProductParser.new "/home/mflafl/products.xml"
     res = parser.get_products

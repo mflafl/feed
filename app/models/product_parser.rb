@@ -41,18 +41,31 @@ class ProductParser
 
   end
   
+  def get_product_base_info(product_node)
+    info = {}
+
+    info[:name] = p.xpath("productinfo/name").text
+    info[:url] = p.xpath("productinfo/url").text
+    info[:modelnumber] = p.xpath("productinfo/modelnumber").text
+    info[:raw] = p.to_s
+
+    info
+  end
+
   def get_products
-    Product.delete_all
-
-
-    #@rows.each { |p|
     p = @rows.first
+
+    product_info = self.get_product_base_info(p)
+
     categories_tree_raw = self.get_categories_tree(p)
     category = get_product_category(categories_tree_raw)
-    
+
+    product_info[:category] = category
 
 
+    p = Product.new(product_info)
+    p.save
 
-    #}
+    p
   end
 end
