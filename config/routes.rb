@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
-    get 'import' => 'application#import'
+  devise_for :users
+  
+  get 'import' => 'application#import'
+
 
 
   # The priority is based upon order of creation: first created -> highest priority.

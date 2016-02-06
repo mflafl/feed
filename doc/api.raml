@@ -1,0 +1,74 @@
+#%RAML 0.8
+
+  title: Feed API
+  baseUri: http://localhost:3000/api/{version}
+  version: v1
+
+  /products:
+      get:
+        description: Get products by category
+        queryParameters:
+          token:
+            displayName: Access token
+            type: string
+            description: Client access token
+            example: 1234567890
+            required: true
+          category:
+            displayName: Category id
+            type: integer
+            description: Category id
+            example: 1
+            required: true
+        responses:
+           200:
+             body:
+               application/json:
+                example: |
+                   {
+                     "data": {
+                       "id": "SbBGk",
+                       "title": "Stiff: The Curious Lives of Human Cadavers",
+                       "description": null,
+                       "datetime": 1341533193,
+                       "genre": "science",
+                       "author": "Mary Roach",
+                       "link": "http://e-bookmobile.com/books/Stiff",
+                     },
+                     "success": true,
+                     "status": 200
+                   }
+
+
+      /{id}:
+          get:
+            description: Get product by id
+            queryParameters:
+              token:
+                displayName: Access token
+                type: string
+                description: Client access token
+                example: 1234567890
+                required: true
+            responses:
+               200:
+                 body:
+                   application/json:
+                    example: |
+                       {
+                         "data": {
+                           "id": "SbBGk",
+                           "title": "Stiff: The Curious Lives of Human Cadavers",
+                           "description": null,
+                           "datetime": 1341533193,
+                           "genre": "science",
+                           "author": "Mary Roach",
+                           "link": "http://e-bookmobile.com/books/Stiff",
+                         },
+                         "success": true,
+                         "status": 200
+                       }
+       #/{id}
+       #  get:
+       #    queryParameters:
+       #     token

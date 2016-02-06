@@ -121,8 +121,4 @@ class ProductParser
     info
   end
 
-
-
-
-
 end
