@@ -12,4 +12,5 @@ class ApplicationController < ActionController::Base
 
     render :json => res
   end
+
 end
