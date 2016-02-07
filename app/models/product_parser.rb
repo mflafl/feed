@@ -1,36 +1,49 @@
 class ProductParser
   @rows = [];
 
-  def initialize(file_path)
+  def initialize(file_path, provider_name)
     doc = File.open(file_path) { |f|
       Nokogiri::XML(f)
     }
 
     @rows = doc.xpath('//product')
+    @provider = get_or_create_provider(provider_name)
+  end
+
+  def get_or_create_provider(name)
+    provider = Provider.where(name: name).first
+    unless provider
+      provider = Provider.new(name: name)
+      provider.save
+    end
+    provider
   end
 
   def get_products
-    p = @rows.first
+    products = [];
+    @rows.each { |p|
+      product_info = self.get_product_base_info(p)
 
-    product_info = self.get_product_base_info(p)
+      product_documents_list = get_product_documents(p)
+      product_badges = get_product_badges(p)
+      product_images = get_product_images(p)
 
-    product_documents_list = get_product_documents(p)
-    product_badges = get_product_badges(p)
-    product_images = get_product_images(p)
+      categories_tree_raw = self.get_categories_tree(p)
+      category = get_product_category(categories_tree_raw)
 
-    categories_tree_raw = self.get_categories_tree(p)
-    category = get_product_category(categories_tree_raw)
-
-    product_info[:category] = category
-    product_info[:documents_list] = product_documents_list
-    product_info[:badges] = product_badges
-    product_info[:images] = product_images
+      product_info[:category] = category
+      product_info[:documents_list] = product_documents_list
+      product_info[:badges] = product_badges
+      product_info[:images] = product_images
+      product_info[:provider] = @provider
 
 
-    p = Product.new(product_info)
-    p.save
+      p = Product.new(product_info)
+      p.save
 
-    p
+      products << p
+    }
+    products
   end
 
   def get_product_images(product_node)
@@ -90,10 +103,10 @@ class ProductParser
     category = nil
 
     tree.each { |category_name|
-      category = Category.where(name: category_name, parent_id: parent_id).first
+      category = Category.where(name: category_name, parent_id: parent_id, provider: @provider).first
 
       if !category
-        category = Category.new(name: category_name, parent_id: parent_id)
+        category = Category.new(name: category_name, parent_id: parent_id, provider: @provider)
         category.save
       end
 

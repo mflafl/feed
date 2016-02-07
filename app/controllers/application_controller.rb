@@ -6,15 +6,17 @@ class ApplicationController < ActionController::Base
   before_action :authenticate_user!
 
   def import
+    #Category.delete_all
     #Product.delete_all
     #
-    #parser = ProductParser.new "/home/mflafl/products.xml"
+    #parser = ProductParser.new "/home/mflafl/var1.xml", "Carrier"
+    #parser = ProductParser.new "/home/mflafl/var2.xml", "Bryant"
+    
     #res = parser.get_products
+    provider = Provider.where(name: "Carrier").first
+    res = provider.categories
 
-    #user  = User.new(password: "12345678", email: "mflafl@ya.ru")
-    #user.save!
-
-    render :json => 't' #user
+    render :json => res
   end
 
 end
